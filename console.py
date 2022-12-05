@@ -74,7 +74,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[-1] is '}' \
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -91,6 +91,7 @@ class HBNBCommand(cmd.Cmd):
     def split_commands(line):
         line = line.split()
         return line
+
     def postcmd(self, stop, line):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
@@ -117,28 +118,31 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Overrides the emptyline method of CMD """
         pass
-    
+
     @staticmethod
     def parse_create_params(args):
         params_dict = {}
         r_exp = re.compile(r"^[\"](.+)[\"]$")
         for arg in args:
-            k,v = arg.split('=')
-            check_q = re.findall(r_exp, v)
-            if len(check_q):
-                params_dict[k] = check_q[0].replace("_", " ")
-            elif v.find("'") != -1:
+            try:
+                k, v = arg.split('=')
+                check_q = re.findall(r_exp, v)
+                if len(check_q):
+                    params_dict[k] = check_q[0].replace("_", " ")
+                elif v.find("'") != -1:
+                    continue
+                elif (v.find('.') != -1):
+                    try:
+                        params_dict[k] = float(v)
+                    except ValueError:
+                        continue
+                else:
+                    try:
+                        params_dict[k] = int(v)
+                    except ValueError:
+                        continue
+            except Exception:
                 continue
-            elif (v.find('.') != -1):
-                try:
-                    params_dict[k] = float(v)
-                except ValueError:
-                    continue
-            else:
-                try:
-                    params_dict[k] = int(v)
-                except ValueError:
-                    continue
         return params_dict
 
     def do_create(self, args):
@@ -219,7 +223,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del storage.all()[key]
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -351,6 +355,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
