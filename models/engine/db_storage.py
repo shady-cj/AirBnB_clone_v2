@@ -60,7 +60,7 @@ class DBStorage:
             cls = ("User", "State", "City",
                     "Amenity", "Place", "Review")
             """
-            cls = ("State", "City")
+            cls = ("State", "City", "User")
             for c in cls:
                 for data in self.__session.query(map_classes[c]).all():
                     key = f"{c}.{data.id}"
