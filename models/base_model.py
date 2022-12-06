@@ -8,7 +8,6 @@ from sqlalchemy import String, Column, DateTime
 Base = declarative_base()
 
 
-
 class BaseModel:
     id = Column(String(60), primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -43,7 +42,7 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
-        storage.new(self) 
+        storage.new(self)
         storage.save()
 
     def to_dict(self):
