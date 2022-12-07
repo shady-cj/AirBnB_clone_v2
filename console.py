@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import re
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -37,6 +38,7 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
+
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -72,8 +74,8 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] == '}'\
-                            and type(eval(pline)) is dict:
+                    if pline[0] == '{' and pline[-1] == '}' \
+                            and type(eval(pline)) == dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
@@ -84,6 +86,17 @@ class HBNBCommand(cmd.Cmd):
             pass
         finally:
             return line
+
+    @staticmethod
+    def split_commands(line):
+        """
+        The split command helps to split the commands into a list in
+        which each entry contains the various key value attributes
+        to be stored.. It is expected that the first value of the list
+        is the class name to be created
+        """
+        line = line.split()
+        return line
 
     def postcmd(self, stop, line):
         """Prints if isatty is false"""
@@ -112,26 +125,54 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    @staticmethod
+    def parse_create_params(args):
+        """
+        This static method is an utility function to do_create
+        method which helps to parse the command and split them into
+        key value pairs (dictionary) in which each key value
+        pair represent the attributes to be created on the proposed
+        class
+        """
+        params_dict = {}
+        r_exp = re.compile(r"^[\"](.+)[\"]$")
+        for arg in args:
+            try:
+                k, v = arg.split('=')
+                check_q = re.findall(r_exp, v)
+                if len(check_q):
+                    params_dict[k] = check_q[0].replace("_", " ")
+                elif v.find("'") != -1:
+                    continue
+                elif (v.find('.') != -1):
+                    try:
+                        params_dict[k] = float(v)
+                    except ValueError:
+                        continue
+                else:
+                    try:
+                        params_dict[k] = int(v)
+                    except ValueError:
+                        continue
+            except Exception:
+                continue
+        return params_dict
+
     def do_create(self, args):
         """ Create an object of any class"""
-        try:
-            if not args:
-                raise SyntaxError()
-            arg_list = args.split(" ")
-            kw = {}
-            for arg in arg_list[1:]:
-                arg_splited = arg.split("=")
-                arg_splited[1] = eval(arg_splited[1])
-                if type(arg_splited[1]) is str:
-                    arg_splited[1] = arg_splited[1].replace("_", " ").replace('"', '\\"')
-                kw[arg_splited[0]] = arg_splited[1]
-        except SyntaxError:
+        args = self.split_commands(args)
+        if not len(args):
             print("** class name missing **")
-        except NameError:
+            return
+        elif args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
-        new_instance = HBNBCommand.classes[arg_list[0]](**kw)
-        new_instance.save()
+            return
+        params_dict = self.parse_create_params(args[1:])
+        new_instance = HBNBCommand.classes[args[0]]()
+        for k, v in params_dict.items():
+            setattr(new_instance, k, v)
         print(new_instance.id)
+        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -194,7 +235,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del storage.all()[key]
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -213,11 +254,22 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage.all(HBNBCommand.classes[args]).items():
+            for k, v in storage.all(eval(args)).items():
                 print_list.append(str(v))
         else:
             for k, v in storage.all().items():
                 print_list.append(str(v))
+        
+
+        """
+        s = "["
+        
+        for l in print_list:
+            s += l
+            s += ","
+        s += "]"
+        print(s)
+        """
         print(print_list)
 
     def help_all(self):
@@ -228,7 +280,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for k, v in storage._FileStorage__objects.items():
+        for k, v in storage.all():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
@@ -324,6 +376,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
