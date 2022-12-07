@@ -24,4 +24,5 @@ class Place(BaseModel, Base):
 
     @property
     def reviews(self):
+        """ getter for reviews"""
         return self.reviews
