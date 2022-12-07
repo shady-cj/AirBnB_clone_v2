@@ -140,3 +140,24 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 (hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'name': 'Fred the Frog', 'age': 9, 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
 ```
 <br>
+
+## Learning Oobjectives
+
+![](https://miro.medium.com/max/640/1*gJO7yKfLFOK2zfHaFDMdgA.webp)
+
+- What is `Unit testing` and how to implement it in a large project
+- What is `*args` and how to use it
+- What is `**kwargs` and how to use it
+- How to __handle named arguments in a function__
+- How to __create a MySQL database__
+- How to __create a MySQL user__ and grant it privileges
+- What `ORM` means
+- How to __map a Python Class to a MySQL table__
+- How to handle 2 different storage engines with the same codebase
+- How to use __environment variables__
+	- `HBNB_ENV`: running environment. It can be “dev” or “test” for the moment (“production” soon!)
+	- `HBNB_MYSQL_USER`: the username of your MySQL
+	- `HBNB_MYSQL_PWD`: the password of your MySQL
+	- `HBNB_MYSQL_HOST`: the hostname of your MySQL
+	- `HBNB_MYSQL_DB`: the database name of your MySQL
+	- `HBNB_TYPE_STORAGE`: the type of storage used. It can be “file” (using FileStorage) or db (using DBStorage)
