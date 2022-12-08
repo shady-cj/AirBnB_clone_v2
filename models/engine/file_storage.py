@@ -14,7 +14,7 @@ class FileStorage:
             filter_obj = {}
             for k, v in self.__objects.items():
                 if k.startswith(cls.__name__):
-                    filter_obj[k] = v
+                    filter_obj[k] = v.to_dict()
             return filter_obj
         return FileStorage.__objects
 

@@ -4,6 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.schema import Table
+import os
 
 place_amenity = Table("place_amenity", Base.metadata,
                 Column("place_id", String(60), ForeignKey("places.id"), primary_key=True),
@@ -30,18 +31,34 @@ class Place(BaseModel, Base):
                              backref="place_amenities")
     amenity_ids = []
 
-    @property
-    def reviews(self):
-        """ getter for reviews"""
-        return self.reviews
+    if os.getenv("HBNB_TYPE_STORAGE") != "db": 
+        @property
+        def reviews(self):
+            """ getter for reviews"""
+            from models import storage
+            from models.review import Review
+            r = []
+            for v in storage.all(Review).values():
+                if v.get("place_id") == self.id:
+                    r.append(v)
+            return r
 
-    @property
-    def amenities(self):
-        """ Getter for filestorage """
-        self.amenities
+        @property
+        def amenities(self):
+            """ Getter for filestorage """
+            from models import storage
+            from models.amenity import Amenity
+            am = []
+            for v in storage.all(Amenity).values():
+                if v.get('id') in self.amenity_ids:
+                    am.append(v)
+            return am
 
-    @amenities.setter
-    def amenities(self, a):
-        """ Setter for filestorage """
-        if type(a).__name__ == "Amenity":
-            self.amenities.append(a.id)
+        @amenities.setter
+        def amenities(self, a):
+            """ Setter for filestorage """
+            if type(a).__name__ == "Amenity":
+                if "amenity_ids" in self.__dict__:
+                    self.amenity_ids.append(a.id)
+                else:
+                    self.amenity_ids = [a.id]

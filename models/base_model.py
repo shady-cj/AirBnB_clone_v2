@@ -9,18 +9,20 @@ Base = declarative_base()
 
 
 class BaseModel:
-    id = Column(String(60), primary_key=True)
-    created_at = Column(DateTime, default=datetime.utcnow())
-    updated_at = Column(DateTime, default=datetime.utcnow())
+    id = Column(String(60), primary_key=True, default=uuid.uuid4)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
 
     """A base class for all hbnb models"""
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
-        if not kwargs:
+        if not self.id:
             self.id = str(uuid.uuid4())
+        if not self.created_at:
             self.created_at = datetime.utcnow()
-            self.updated_at = datetime.utcnow()
-        else:
+        if not self.updated_at:
+            self.updated_at= datetime.utcnow()
+        if kwargs:
             for att in kwargs.keys():
                 if att != "__class__":
                     if att in ("created_at", "updated_at"):
@@ -32,10 +34,11 @@ class BaseModel:
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        if self.__dict__.get("_sa_instance_state"):
-            self.__dict__.pop("_sa_instance_state")
+        cls_dict = dict(self.__dict__)
+        if cls_dict.get("_sa_instance_state"):
+            cls_dict.pop("_sa_instance_state")
 
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        return '[{}] ({}) {}'.format(cls, self.id, cls_dict)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""

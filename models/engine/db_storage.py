@@ -74,7 +74,11 @@ class DBStorage:
         """
         commit all changes of the current database session (self.__session)
         """
-        self.__session.commit()
+        try:
+            self.__session.commit()
+
+        except PendingRollbackError:
+            self.__session.Rollback()
 
     def delete(self, obj=None):
         """
