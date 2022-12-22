@@ -13,9 +13,9 @@ def do_pack():
     Archives the web_static directory
     """
     now = datetime.now()
-    archive_name = f"web_static_{now.year}{now.month}\
-{now.day}{now.hour}{now.minute}{now.second}.tgz"
-    command = local(f'tar -cvzf {archive_name} web_static/')
+    archive_name = "web_static_{}{}{}{}{}{}.tgz"\
+        .format(now.year, now.month, now.day, now.hour, now.minute, now.second)
+    command = local('tar -cvzf {} web_static/'.format(archive_name))
     if command.failed:
         return None
     return os.path.abspath(archive_name)
