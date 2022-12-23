@@ -3,18 +3,16 @@
 Using Fabric to run commands remotely..
 Fabric deploys an archive to remote hosts
 """
-from fabric.api import local, env, execute, run, cd, put, sudo
+from fabric.api import local, env, execute, run, cd, put, sudo, hosts
 from datetime import datetime
 import os
 
+pack = __import__("1-pack_web_static").do_pack
 
-env.hosts = [
-            '54.209.240.136',
-            '100.24.237.186'
-        ]
 env.user = 'ubuntu'
 
 
+@hosts(['54.209.240.136','100.24.237.186'])
 def do_deploy(archive_path=None):
     """
     Deploys an archive to a remote hosts
@@ -45,3 +43,16 @@ def do_deploy(archive_path=None):
         return True
     except Exception as e:
         return False
+
+def deploy():
+    path = execute(pack)
+    if path is None:
+        return False
+    path = path.get('<local-only>')
+    
+    ret = execute(do_deploy, path)
+    for v in ret.values():
+        if v == False:
+            return False
+    return True
+
