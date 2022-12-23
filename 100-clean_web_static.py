@@ -60,12 +60,13 @@ def deploy():
     return True
 
 
-@hosts(['54.209.240.136', '100.24.237.186'])
-def do_clean(number=0):
+def clean_local(number=0):
     """
-    Clean up old archives
+    Clean archives locally and store
+    the removed archives
     """
-    v = local('ls -t versions', capture=True) 
+    number = int(number)
+    v = local('ls -t versions', capture=True)
     files = v.splitlines()
     removed_files = []
     if number < 2:
@@ -76,8 +77,25 @@ def do_clean(number=0):
         for file in files[number:]:
             local('rm -f versions/{}'.format(file))
             removed_files.append(file)
+    return removed_files
 
+
+@hosts(['54.209.240.136', '100.24.237.186'])
+def clean_remote(removed_files=[]):
+    """
+    clean directories remotely based on the
+    files cleaned locally
+    """
     with cd('/data/web_static/releases'):
         for each_files in removed_files:
             filename = os.path.splitext(each_files)[0]
             sudo('rm -rf {}'.format(filename))
+
+
+def do_clean(number=0):
+    """
+    Clean up old archives
+    """
+    local_execute = execute(clean_local, number)
+    removed_files = local_execute.get('<local-only>')
+    execute(clean_remote, removed_files)
