@@ -19,4 +19,6 @@ def do_pack():
     command = local('tar -cvzf versions/{} web_static/'.format(archive_name))
     if command.failed:
         return None
-    return os.path.abspath(archive_name)
+    get_dir = os.getcwd()
+    archive_path = "{}/versions/{}".format(get_dir, archive_name)
+    return os.path.abspath(archive_path)
