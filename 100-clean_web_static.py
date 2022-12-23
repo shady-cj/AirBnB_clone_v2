@@ -2,11 +2,11 @@
 """
 Using Fabric to run commands remotely..
 Fabric deploys an archive to remote hosts
+and clean old archives
 """
 from fabric.api import local, env, execute, run, cd, put, sudo, hosts
 from datetime import datetime
 import os
-
 pack = __import__("1-pack_web_static").do_pack
 
 env.user = 'ubuntu'
@@ -58,3 +58,26 @@ def deploy():
         if not v:
             return False
     return True
+
+
+@hosts(['54.209.240.136', '100.24.237.186'])
+def do_clean(number=0):
+    """
+    Clean up old archives
+    """
+    v = local('ls -t versions', capture=True) 
+    files = v.splitlines()
+    removed_files = []
+    if number < 2:
+        for file in files[1:]:
+            local('rm -f versions/{}'.format(file))
+            removed_files.append(file)
+    else:
+        for file in files[number:]:
+            local('rm -f versions/{}'.format(file))
+            removed_files.append(file)
+
+    with cd('/data/web_static/releases'):
+        for each_files in removed_files:
+            filename = os.path.splitext(each_files)[0]
+            sudo('rm -rf {}'.format(filename))
