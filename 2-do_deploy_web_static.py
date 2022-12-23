@@ -14,6 +14,7 @@ env.hosts = [
         ]
 env.user = 'ubuntu'
 
+
 def do_deploy(archive_path=None):
     """
     Deploys an archive to a remote hosts
@@ -25,16 +26,23 @@ def do_deploy(archive_path=None):
 
     try:
         with cd('/tmp'):
-            file = os.path.basename(local_archive_path) # Gets the filename with extension
-            filename = os.path.splitext(file)[0] # Strips the extension off the filename
+            # Gets the filename with extension
+            file = os.path.basename(local_archive_path)
+
+            # Strips the extension off the filename
+            filename = os.path.splitext(file)[0]
             put(local_archive_path, file)
             sudo('mkdir -p /data/web_static/releases/{}'.format(filename))
-            sudo('tar -xzvf {} -C /data/web_static/releases/{}'.format(file, filename))
-            sudo('cp -ru /data/web_static/releases/{}/web_static/* /data/web_static/releases/{}'.format(filename, filename))
+            sudo('tar -xzf {} -C /data/web_static/releases/{}'
+                 .format(file, filename))
+            sudo('cp -ru /data/web_static/releases/{}/web_static/* \
+/data/web_static/releases/{}'.format(filename, filename))
             sudo('rm {}'.format(file))
-            sudo('rm -r /data/web_static/releases/{}/web_static'.format(filename))
+            sudo('rm -r /data/web_static/releases/{}/web_static'
+                 .format(filename))
             sudo('rm /data/web_static/current')
-            sudo('ln -s /data/web_static/releases/{} /data/web_static/current'.format(filename))
+            sudo('ln -s /data/web_static/releases/{} /data/web_static/current'
+                 .format(filename))
         return True
     except Exception as e:
         print("Error occured", e)
