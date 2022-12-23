@@ -45,6 +45,9 @@ def do_deploy(archive_path=None):
         return False
 
 def deploy():
+    """
+    Archive and deploy
+    """
     path = execute(pack)
     if path is None:
         return False
