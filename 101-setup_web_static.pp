@@ -64,6 +64,13 @@ exec { 'substituteHostname':
 
 
 # Creating directory for the static files
+file { '/data/':
+  ensure       => directory,
+  group        => 'ubuntu',
+  owner        => 'ubuntu',
+  recurse      => true,
+}
+
 exec { '/bin/mkdir -p /data/web_static/releases/; /bin/mkdir -p /data/web_static/shared/; /bin/mkdir -p /data/web_static/releases/test/': }
 
 file { '/data/web_static/releases/test/index.html':
@@ -84,10 +91,5 @@ file { '/data/web_static/current':
   notify => Service['nginx']
 }
 
-
-file { '/data/':
-  ensure       => directory,
-  group        => 'ubuntu',
-  owner        => 'ubuntu',
-  recurse      => true,
+exec { '/bin/chown -RH ubuntu:ubuntu /data/':
 }
