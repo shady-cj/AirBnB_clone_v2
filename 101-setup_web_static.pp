@@ -91,5 +91,5 @@ file { '/data/web_static/current':
   notify => Service['nginx']
 }
 
-exec { '/bin/chown -RH ubuntu:ubuntu /data/':
+exec { '/bin/chown -R ubuntu:ubuntu /data/':
 }
