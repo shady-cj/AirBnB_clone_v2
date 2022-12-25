@@ -64,13 +64,6 @@ exec { 'substituteHostname':
 
 
 # Creating directory for the static files
-
-file { '/data/':
-  ensure  => directory,
-  group   => 'ubuntu',
-  owner   => 'ubuntu',
-  recurse => true
-}
 exec { '/bin/mkdir -p /data/web_static/releases/; /bin/mkdir -p /data/web_static/shared/; /bin/mkdir -p /data/web_static/releases/test/': }
 
 file { '/data/web_static/releases/test/index.html':
@@ -84,6 +77,13 @@ file { '/data/web_static/releases/test/index.html':
 '
 }
 
+file { '/data/':
+  ensure       => directory,
+  group        => 'ubuntu',
+  owner        => 'ubuntu',
+  recurse      => true,
+  recurselimit => 1
+}
 
 file { '/data/web_static/current':
   ensure => link,
