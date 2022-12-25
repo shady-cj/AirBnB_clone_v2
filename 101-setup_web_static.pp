@@ -77,16 +77,17 @@ file { '/data/web_static/releases/test/index.html':
 '
 }
 
-file { '/data/':
-  ensure       => directory,
-  group        => 'ubuntu',
-  owner        => 'ubuntu',
-  recurse      => true,
-  recurselimit => 1
-}
 
 file { '/data/web_static/current':
   ensure => link,
   target => '/data/web_static/releases/test',
   notify => Service['nginx']
+}
+
+
+file { '/data/':
+  ensure       => directory,
+  group        => 'ubuntu',
+  owner        => 'ubuntu',
+  recurse      => true,
 }
