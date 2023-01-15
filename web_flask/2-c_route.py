@@ -31,7 +31,8 @@ def hbnb():
 @app.route('/c/<text>')
 def C_route(text):
     """
-    returns C is <text>(replacing all _ with ' '
+    The function returns the string
+    C is <text>(replacing all _ with ' '
     """
     return f"C {escape(text).replace('_',' ')}"
 
