@@ -32,9 +32,9 @@ def hbnb():
 def C_route(text):
     """
     The function returns the string
-    C is <text>(replacing all _ with ' '
+    C is <text>(replacing all _ with ' ')
     """
-    return f"C {escape(text).replace('_',' ')}"
+    return "C {}".format(escape(text).replace('_',' '))
 
 
 if __name__ == "__main__":
