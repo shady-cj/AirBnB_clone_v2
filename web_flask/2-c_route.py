@@ -29,7 +29,7 @@ def hbnb():
 
 
 @app.route('/c/<text>')
-def C(text):
+def C_route(text):
     """
     returns C is <text>(replacing all _ with ' '
     """
