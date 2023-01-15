@@ -9,6 +9,10 @@ app = Flask(__name__.split('.')[0])
 
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
+    """
+    A function that returns an the default
+    route
+    """
     return 'Hello HBNB!'
 
 
