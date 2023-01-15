@@ -39,7 +39,7 @@ class Place(BaseModel, Base):
             from models.review import Review
             r = []
             for v in storage.all(Review).values():
-                if v.get("place_id") == self.id:
+                if v.place_id == self.id:
                     r.append(v)
             return r
 
@@ -50,7 +50,7 @@ class Place(BaseModel, Base):
             from models.amenity import Amenity
             am = []
             for v in storage.all(Amenity).values():
-                if v.get('id') in self.amenity_ids:
+                if v.id in self.amenity_ids:
                     am.append(v)
             return am
 

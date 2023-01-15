@@ -33,6 +33,7 @@ city_2_1.save()
 print("")
 all_states = storage.all(State)
 for state_id, state in all_states.items():
+    print(state)
     for city in state.cities:
         print("Find the city {} in the state {}".format(city, state))
 

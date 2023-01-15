@@ -20,6 +20,6 @@ class State(BaseModel, Base):
             from models import storage
             from models.city import City
             for v in storage.all(City).values():
-                if v.get("state_id") == self.id:
+                if v.state_id == self.id:
                     c.append(v)
             return c
