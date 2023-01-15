@@ -57,7 +57,7 @@ class DBStorage:
                 obj[key] = data
         else:
             cls = ("User", "State", "City",
-                    "Amenity", "Place", "Review")
+                   "Amenity", "Place", "Review")
             for c in cls:
                 for data in self.__session.query(map_classes[c]).all():
                     key = f"{c}.{data.id}"
@@ -104,4 +104,3 @@ class DBStorage:
     def close(self):
         """ Method to close a session """
         self.__session.remove()
-
