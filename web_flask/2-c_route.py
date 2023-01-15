@@ -5,7 +5,7 @@ on port 5000 and returns different
 routes
 """
 
-from flask import Flask, escape
+from flask import Flask
 app = Flask(__name__.split('.')[0])
 app.url_map.strict_slashes = False
 
@@ -34,7 +34,7 @@ def C_route(text):
     The function returns the string
     C is <text>(replacing all _ with ' ')
     """
-    return "C {}".format(escape(text).replace('_',' '))
+    return "C {}".format(text.replace('_',' '))
 
 
 if __name__ == "__main__":
