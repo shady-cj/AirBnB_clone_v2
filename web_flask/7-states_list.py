@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Flask application that fetches data from a database and
 display its data using a template
