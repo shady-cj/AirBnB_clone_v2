@@ -16,6 +16,7 @@ app.url_map.strict_slashes = False
 def list_states():
     """
     Returns the list of states present in the database
+    by passing the states list into the template
     """
     s = storage.all(State).values()
     return render_template('7-states_list.html', states=s)
@@ -24,7 +25,8 @@ def list_states():
 @app.teardown_appcontext
 def teardown_context(exception):
     """
-    closes and reloads the session
+    closes the scoped session and reloads
+    the session
     """
     storage.close()
 
