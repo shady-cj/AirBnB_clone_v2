@@ -2,10 +2,20 @@
 """This module defines a base class for all models in our hbnb clone"""
 import uuid
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, declared_attr
 from sqlalchemy import String, Column, DateTime
 
-Base = declarative_base()
+
+class Base(object):
+    @declared_attr
+    def __tablename__(cls):
+        return cls.__name__.lower()
+
+    __table_args__ = {
+            'mysql_default_charset': 'latin1',
+            }
+
+Base = declarative_base(cls=Base)
 
 
 class BaseModel:
