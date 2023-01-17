@@ -23,7 +23,7 @@ class DBStorage:
         env = os.getenv("HBNB_ENV")
         url = "mysql+mysqldb://{}:{}@{}:3306/{}?charset=latin1"\
               .format(username, password, host, db)
-        self.__engine = create_engine(url, pool_pre_ping=True, echo=True)
+        self.__engine = create_engine(url, pool_pre_ping=True)
         if env == "test":
             conn = self.__engine.connect()
             tables = conn.execute("SHOW TABLES")

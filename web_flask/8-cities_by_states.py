@@ -20,7 +20,6 @@ def list_states():
     and also listing there cities.
     """
     s = storage.all(State).values()
-    print(s)
     return render_template('8-cities_by_states.html', states=s)
 
 
